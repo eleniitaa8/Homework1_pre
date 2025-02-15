@@ -33,6 +33,9 @@ public class IncidentController extends HttpServlet {
             action = "list";
         }
         switch (action) {
+            case "edit":
+                showEditForm (request, response);
+                break;
             case "detail":
                 showDetail(request, response);
                 break;
@@ -126,6 +129,18 @@ public class IncidentController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
         }
     }
+    
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String jwtToken = (session != null) ? (String) session.getAttribute("jwtToken") : null;
+        //if (jwtToken == null) {
+            // Si no hay token, redirigimos a la página de login o a una página de error
+            //comprobar que el usuario sea del ayuntamiento
+            //response.sendRedirect(request.getContextPath() + "/login?error=notLogged");
+            //return;
+        //}
+        request.getRequestDispatcher("/WEB-INF/views/editIncident.jsp").forward(request, response);
+    }   
 
     // Endpoint para obtener los datos de incidencias para el mapa
     private void getMapData(HttpServletRequest request, HttpServletResponse response)

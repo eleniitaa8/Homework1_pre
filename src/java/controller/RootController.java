@@ -37,7 +37,7 @@ public class RootController extends HttpServlet {
             System.out.println("Número de incidencias obtenidas: " + incidents.size());
 
             request.setAttribute("incidents", incidents);
-            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/incidents.jsp").forward(request, response);
         } catch (Exception e) {
             System.err.println("Error en RootController: " + e.getMessage());
             request.setAttribute("errorMessage", "Error obteniendo incidencias: " + e.getMessage());

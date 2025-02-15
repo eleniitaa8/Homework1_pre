@@ -1,79 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Nueva Incidencia</title>
+  <title>Nueva Incidencia / Sugerencia</title>
   <link rel="stylesheet" href="<%= request.getContextPath() %>/resources/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
-    .new-incident-container {
-      max-width: 600px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .new-incident-container h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #007aff;
-    }
-    .new-incident-container form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .new-incident-container label {
-      font-weight: bold;
-      margin-bottom: 5px;
-      display: block;
-      color: #333;
-    }
-    .new-incident-container input[type="text"],
-    .new-incident-container textarea,
-    .new-incident-container input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-    .new-incident-container button {
-      padding: 10px;
-      background-color: #007aff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-    .new-incident-container button:hover {
-      background-color: #005bb5;
-      transform: scale(1.05);
-    }
-    #geoMessage {
-      font-style: italic;
-      color: #555;
-      margin-top: 5px;
-    }
-    .geo-btn {
-      margin-top: 5px;
-      padding: 8px 12px;
-      background-color: #34c759;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: background-color 0.3s ease;
-    }
-    .geo-btn:hover {
-      background-color: #2fa44f;
-    }
-  </style>
   <script>
     // Función para geocodificación inversa: obtener la dirección a partir de lat, lon
     function reverseGeocode(lat, lon) {
@@ -118,6 +51,32 @@
         });
     }
 
+    // Función para manejar el cambio de pestaña
+    function selectTab(tipo) {
+      // Actualiza el campo oculto
+      document.getElementById('tipo').value = tipo;
+      
+      // Actualiza la apariencia de los botones
+      if(tipo === 'incidencia') {
+        document.getElementById('incidenciasTab').classList.add('active');
+        document.getElementById('sugerenciasTab').classList.remove('active');
+        // Mostrar el filtro de categoría (se permite seleccionar solo una opción)
+        document.getElementById('newCategoriaContainer').style.display = 'block';
+        // Actualizar el texto del botón de envío
+        document.getElementById('submitButton').value = "Añadir incidencia";
+        // Reiniciar la selección de radio buttons si fuese necesario
+        const radios = document.getElementsByName('categoria');
+        radios.forEach(radio => radio.checked = false);
+      } else {
+        document.getElementById('sugerenciasTab').classList.add('active');
+        document.getElementById('incidenciasTab').classList.remove('active');
+        // Ocultar el filtro de categoría
+        document.getElementById('newCategoriaContainer').style.display = 'none';
+        // Actualizar el texto del botón de envío
+        document.getElementById('submitButton').value = "Añadir sugerencia";
+      }
+    }
+
     // Al cargar la página, si hay parámetros lat y lon, se rellenan y se ejecuta la geocodificación inversa
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -128,14 +87,30 @@
           document.getElementById('longitude').value = lon;
           reverseGeocode(lat, lon);
       }
+      // Seleccionar por defecto "Incidencia"
+      selectTab('incidencia');
     }
   </script>
 </head>
 <body>
   <jsp:include page="/WEB-INF/jspf/header.jsp" />
   <div class="new-incident-container">
-    <h1>Nueva Incidencia</h1>
+    <h1>Nueva incidencia / sugerencia</h1>
+    
+    <!-- Menú de pestañas específico para este formulario -->
+    <div class="new-form-tab-header">
+      <button id="incidenciasTab" class="new-form-tab-button active" type="button" onclick="selectTab('incidencia')">
+        <i class="fas fa-map-marker-alt"></i> Incidencias
+      </button>
+      <button id="sugerenciasTab" class="new-form-tab-button" type="button" onclick="selectTab('sugerencia')">
+        <i class="fas fa-comment-alt"></i> Sugerencias
+      </button>
+    </div>
+    
     <form method="post" action="<%= request.getContextPath() %>/IncidentController?action=create" enctype="multipart/form-data">
+      <!-- Campo oculto para enviar el tipo (incidencia o sugerencia) -->
+      <input type="hidden" id="tipo" name="tipo" value="incidencia">
+      
       <!-- Campo para ingresar la dirección -->
       <div class="form-group">
         <label for="street"><i class="fas fa-map-marker-alt"></i> Calle en Tarragona</label>
@@ -143,22 +118,52 @@
         <button type="button" class="geo-btn" onclick="geocodeAddress()">Buscar Ubicación</button>
         <div id="geoMessage"></div>
       </div>
+      
       <!-- Campos ocultos para latitud y longitud -->
       <input type="hidden" id="latitude" name="latitude">
       <input type="hidden" id="longitude" name="longitude">
       
-      <!-- Campo para la descripción de la incidencia -->
-      <div class="form-group">
-        <label for="description"><i class="fas fa-align-left"></i> Resumen de la incidencia</label>
-        <textarea id="description" name="description" placeholder="Describe la incidencia" required></textarea>
+      <!-- Filtro de categoría (solo para incidencias) -->
+      <div id="newCategoriaContainer" class="form-group">
+        <label>Filtrar por categoría (selecciona una):</label>
+        <div class="new-form-topics-container">
+          <!-- Se asume que 'categorias' es una lista enviada desde el backend -->
+          <c:forEach var="categoria" items="${categorias}">
+            <label class="topic-chip">
+              <input type="radio" name="categoria" value="${categoria}">
+              <span>${categoria}</span>
+            </label>
+          </c:forEach>
+        </div>
       </div>
-      <!-- Campo para la fotografía de la incidencia -->
+      
+      <!-- Campo para la descripción -->
       <div class="form-group">
-        <label for="image"><i class="fas fa-image"></i> Fotografía de la incidencia</label>
+        <label for="description"><i class="fas fa-align-left"></i> Resumen</label>
+        <textarea id="description" name="description" placeholder="Describe la incidencia o sugerencia" required></textarea>
+      </div>
+      
+      <!-- Campo para la imagen -->
+      <div class="form-group">
+        <label for="image"><i class="fas fa-image"></i> Fotografía</label>
         <input type="file" id="image" name="image" accept="image/*" required>
       </div>
-      <button type="submit">Enviar Incidencia</button>
+      
+      <!-- Botón de envío: el texto se actualizará dinámicamente -->
+      <div class="form-group">
+        <input type="submit" id="submitButton" value="Añadir incidencia">
+      </div>
     </form>
   </div>
+  
+  <!-- Footer añadido -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Hackathon Cloud Computing</p>
+      <ul class="footer-team">
+        <li>Elena Díez, Álvaro Lucas, Àitor Olivares, Marina Oteiza</li>
+      </ul>
+    </div>
+  </footer>
 </body>
 </html>

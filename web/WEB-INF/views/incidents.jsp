@@ -16,7 +16,18 @@
     <script src="<%= request.getContextPath() %>/resources/js/app.js" defer></script>
     <script>
         window.contextPath = "<%= request.getContextPath() %>";
-    </script>      
+    </script>  
+    <script>
+        // Función para mostrar/ocultar el filtro de tipo de incidencia según la opción seleccionada
+        function toggleIncidentTypeFilter(value) {
+            var incidentTypeDiv = document.getElementById('incidentTypeFilter');
+            if(value === 'incidencia'){
+                incidentTypeDiv.style.display = 'block';
+            } else {
+                incidentTypeDiv.style.display = 'none';
+            }
+        }
+    </script>    
     <style>
         /* Contenedor principal */
         .main-container {
@@ -79,6 +90,9 @@
         <div class="side-panel">
             <!-- Botones en la parte superior del panel lateral -->
             <div class="filter-top-buttons">
+                <button class="btn-floating" onclick="window.location.href='<%= request.getContextPath() %>/IncidentController?action=edit'">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
                 <button class="btn-floating" onclick="window.location.href='<%= request.getContextPath() %>/IncidentController?action=new'">
                     <i class="fas fa-plus"></i>
                 </button>
@@ -102,6 +116,25 @@
                         <label for="search">Buscar:</label>
                         <input type="text" id="search" name="search" placeholder="Palabra clave">
                     </div>
+                    <!-- Filtro para seleccionar sugerencias o incidencias -->
+                    <div>
+                        <label for="category">Categoría:</label>
+                        <select id="category" name="category" onchange="toggleIncidentTypeFilter(this.value)">
+                            <option value="">Todas</option>
+                            <option value="sugerencia">Sugerencias</option>
+                            <option value="incidencia">Incidencias</option>
+                        </select>
+                    </div>
+                    <!-- Filtro para tipo de incidencia, visible solo si se selecciona "incidencia" -->
+                    <div id="incidentTypeFilter" style="display: none;">
+                        <label for="incidentType">Tipo de Incidencia:</label>
+                        <select id="incidentType" name="incidentType">
+                            <option value="">Todos</option>
+                            <option value="infraestructura">Infraestructura</option>
+                            <option value="vial">Vial</option>
+                            <option value="limpieza">Limpieza</option>
+                        </select>
+                    </div>
                     <div>
                         <button type="submit" class="btn-primary">Aplicar Filtros</button>
                     </div>
@@ -117,13 +150,9 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p>Participamos en el Hackathon de Cloud Computing</p>
-            <p>Estudiamos el Doble Grado de Biotec e Informática (BIOGEI)</p>
+            <p>Hackathon Cloud Computing</p>
             <ul class="footer-team">
-                <li>Álvaro Lucas - alvaro.lucas@estudiants.urv.cat</li>
-                <li>Marina Oteiza - marina.oteiza@estudiants.urv.cat</li>
-                <li>Àitor Olivares - aitor.olivares@estudiants.urv.cat</li>
-                <li>Elena Díez - elena.diez@estudiants.urv.cat</li>
+                <li>Elena Díez, Álvaro Lucas, Àitor Olivares, Marina Oteiza</li>
             </ul>
         </div>
     </footer>

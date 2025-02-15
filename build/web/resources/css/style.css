@@ -75,8 +75,41 @@ body {
     display: flex;
     gap: 20px;
     padding: 20px 40px;
+    align-items: flex-start; /* Asegura que ambos paneles comiencen al mismo nivel */
 }
 
+.map-container {
+    flex: 2;
+    height: 500px; /* Tamaño reducido para que no ocupe toda la hoja */
+}
+
+/* Panel lateral: forzamos una altura fija */
+.side-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 500px; /* Altura total igual a la del mapa */
+}
+
+/* Los botones superiores pueden tener una altura fija */
+.filter-top-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    /* Opcional: definir una altura fija si lo necesitas, por ejemplo: */
+    height: 60px;
+}
+
+/* El contenedor de filtros ocupa el resto del espacio */
+.filter-container {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow-y: auto;
+}
 .map-container {
     flex: 2;
     height: 500px; /* Tamaño reducido para que no ocupe toda la hoja */
@@ -496,6 +529,7 @@ body {
   }
   
   /* Encabezado interno con pestañas */
+  /*Encabezado preestablecido*/
   .tab-header {
     display: flex;
     border-bottom: 1px solid #ddd;
@@ -524,7 +558,143 @@ body {
     background-color: #e0e0e0;
     color: #333;
   }
+  /*Estilos para viewIncidents*/
+    .tab-header2 {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      background-color: #e6f0ff;
+    }
+    .tab-header2 .tab-button2 {
+      flex: 1;
+      padding: 12px 0;
+      background-color: transparent;
+      border: none;
+      border-right: 1px solid #ddd;
+      font-size: 1rem;
+      color: #0056b3;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .tab-header2 .tab-button2:last-child {
+      border-right: none;
+    }
+    .tab-header2 .tab-button2.active,
+    .tab-header2 .tab-button2:hover {
+      background-color: #007aff;
+      color: #fff;
+    }
+    /* Centrado y estilo para los títulos */
+    .tab-content2 h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #007aff;
+    }
   
+    /*NewIncident.jsp*/
+        .new-incident-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .new-incident-container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #007aff;
+    }
+    .new-incident-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .new-incident-container label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+      color: #333;
+    }
+    .new-incident-container input[type="text"],
+    .new-incident-container textarea,
+    .new-incident-container input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .new-incident-container button {
+      padding: 10px;
+      background-color: #007aff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .new-incident-container button:hover {
+      background-color: #005bb5;
+      transform: scale(1.05);
+    }
+    #geoMessage {
+      font-style: italic;
+      color: #555;
+      margin-top: 5px;
+    }
+    .geo-btn {
+      margin-top: 5px;
+      padding: 8px 12px;
+      background-color: #34c759;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+    }
+    .geo-btn:hover {
+      background-color: #2fa44f;
+    }
+    
+    /*jsp new incident*/
+    .new-form-tab-header {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      background-color: #e6f0ff;
+      margin-bottom: 20px;
+    }
+    .new-form-tab-header .new-form-tab-button {
+      flex: 1;
+      padding: 12px 0;
+      background-color: transparent;
+      border: none;
+      border-right: 1px solid #ddd;
+      font-size: 1rem;
+      color: #0056b3;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .new-form-tab-header .new-form-tab-button:last-child {
+      border-right: none;
+    }
+    .new-form-tab-header .new-form-tab-button.active,
+    .new-form-tab-header .new-form-tab-button:hover {
+      background-color: #007aff;
+      color: #fff;
+    }
+    /* Estilo para el título del formulario */
+    .new-incident-container h1 {
+      text-align: center;
+      color: #007aff;
+    }
+    /* Contenedor de la categoría (solo para incidencias) */
+    #newCategoriaContainer {
+      display: none;
+    }
+    
+    
   /* Contenido de cada pestaña */
   .tab-content {
     padding: 20px 30px;
